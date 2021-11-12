@@ -1,4 +1,14 @@
 #  ## Problem Set 1
+# Corrections for the following  GSI comments from Canvas:
+# 
+# Q0: -3 for not provide both raw and formatted versions.
+# 
+# Q3: -2 do not have method parameter but instead write individual functions.
+# 
+# Overall: -10 for no docstring in every function
+# 
+# I have now included the raw version in the notebook.
+# I also added docstring for functions and made the method parameter instead of the indiviudal functions.
 
 # ## Question 0
 # 
@@ -25,6 +35,35 @@
 #         b. Item 2
 #         c. Iten 3
 #  
+---
+The Markdown I used to produce Question 0.
+## Question 0
+ 
+ This is *question 0* for [problem set 1](https://jbhender.github.io/Stats507/F21/ps/ps1.html) of 
+ [Stats 507](https://jbhender.github.io/Stats507/F21/).
+ 
+ > Question 0 is about Markdown
+ 
+ The next question is about the **Fibonnaci sequence**, $F_{n} = F_{n-2}+F_{n-1}$. In part **a** 
+ we will define a Python function `fib_rec()`.
+ 
+ Below is a …
+  
+### Level 3 Header
+Next, we can make a bulleted list:
+ 
+ * Item 1
+  + detail 1
+  + detail 2
+  
+ * Item 2
+ 
+Finally, we can make an enumerated list:
+ 
+         a. Item 1 
+         b. Item 2
+         c. Iten 3
+---
 
 # ## Question 1
 
@@ -43,9 +82,19 @@ import scipy.stats as st
 
 
 """
-a
+For this question, we will be creating different functions for generating Fibonacci numbers.
 """
+
 def fib_rec(n):
+    """
+    a
+    Using a recursive function to generate Fibonacci numbers.
+    Parameters:
+    n: is n-th Fibonacci number to be generated
+
+    Returns the n-th Fibonacci number
+
+    """
     if n<= 1:
         return n
     else:
@@ -53,10 +102,17 @@ def fib_rec(n):
     
 assert np.all(fib_rec(7)==13) and np.all(fib_rec(11)==89) and np.all(fib_rec(13)==233)
 
-"""
-b
-"""
+
 def fib_for(n):
+    """
+    b
+    Using for loop to generate fibonacci number.
+
+    Parameters:
+    n: is n-th Fibonacci number to be generated
+
+    Returns the n-th Fibonacci number
+    """
     if n<=1:
         return n
     else :
@@ -71,10 +127,15 @@ def fib_for(n):
             
 assert np.all(fib_for(7)==13) and np.all(fib_for(11)==89) and np.all(fib_for(13)==233)
 
-"""
-c
-"""
 def fib_whl(n):
+    """
+    c
+    Using the while loop to generate the Fibonacci numbers,
+    Parameters:
+    n: is n-th Fibonacci number to be generated
+
+    Returns the n-th Fibonacci number
+    """
     if n<=1:
         return n
     else :
@@ -91,20 +152,32 @@ def fib_whl(n):
     
 assert np.all(fib_whl(7)==13) and np.all(fib_whl(11)==89) and np.all(fib_whl(13)==233)  
 
-"""
-d
-"""
+
 def fib_rnd(n):
+    """
+    d
+    Using the rounding method described on the Wikipedia for generating the Fibonacci numbers.
+    Parameters:
+    n: is n-th Fibonacci number to be generated
+
+    Returns the n-th Fibonacci number
+    """
     x = (1 + math.sqrt(5))/2
     fsum = (x**n)/math.sqrt(5)
     return round(fsum)
 
 assert np.all(fib_rnd(7)==13) and np.all(fib_rnd(11)==89) and np.all(fib_rnd(13)==233) 
 
-"""
-e
-"""
+
 def fib_flr(n):
+    """
+    e
+    Using the truncation method described on the Wikipedia.
+    Parameters:
+    n: is n-th Fibonacci number to be generated
+
+    Returns the n-th Fibonacci number
+    """
     x = (1 + math.sqrt(5))/2
     fsum = ((x**n)/math.sqrt(5) + 1/2 )
     return math.floor(fsum)
@@ -143,20 +216,33 @@ for a in [5,10,15,20]:
 # In[4]:
 
 
-"""
-a
-"""
-def computeRow(n):    
+def computeRow(n):  
+    """
+    a
+    Computes a specified row of the Pascal Triangle. 
+
+    Parameter:
+    n : The row to be computed.
+
+    Returns the n-th row of the Pascal Triangle
+    """
     b = []
     for k in range (0,n+1):
         a = int((math.factorial(n))/((math.factorial(k))*(math.factorial(n-k))))
         b.append(a)
     return b
 
-"""
-b
-"""
+
 def computeTriangle(n):
+    """
+    b
+    Prints the desired rows of the Pascal Triangle
+    
+    Parameters:
+    n : The number of rows to be produced. 
+    
+    Returns the Pascal Traingle using a printTri.
+    """
     tri = []
     for i in range (0,n+1):
         a = computeRow(i)
@@ -185,22 +271,42 @@ computeTriangle(10)
 
 # In[5]:
 
-
 def estimate_interval(a,b,c,d):
+    """
+    Returns the estimate and confidence interval for the mean of `a`.
+
+    Parameters
+    ----------
+    a : The mean of the a given numPy array.
+    b : The confidence interval to be calculated.
+    c : The lower bound of the confidence interval
+    d : The upper bound of the confidence interval.
+    
+    Returns a string output of the mean, confidence intervals of the input array.
+    """
     if a is None:
         dk = {"est": 0, "level":0, "lwr": 0, "upr": 0 }
         return dk
     else:
         return("%.2f[%2.1f%%CI:(%.4f,%.4f)]" % (a,b,c,d))
 
-
 # In[6]:
-
 
 """
 a
 """
 def normalIntEst(a, b):
+    """
+     Constructing a Confidence Interval for population proportions
+    using normal method.
+     Parameters
+    a: A 1-dimensional NumPy array or compatible sequence type (list, tuple)
+    b: confidence level
+    
+    returns
+    An tuple of strings with point and interval estimate
+
+    """
     x = np.mean(a)
     se = st.sem(a)
     array =st.norm.interval(b/100, x, se)
@@ -211,81 +317,99 @@ def normalIntEst(a, b):
 """
 b
 """
-def normalIntEst(a, b):
-    x = np.mean(a)
-    se = st.sem(a)
-    array =st.norm.interval(b/100, x, se)
-    lwr = array[0]
-    upr = array[1]
-    return(estimate_interval(x, b, lwr, upr))
+def ci_prop(a, b, c):
+    """
+    Constructing a Confidence Interval for population proportions
+    using different methods
+     Parameters
+    a: A 1-dimensional NumPy array or compatible sequence type (list, tuple)
+    b: confidence level
+    c: Method used
+    
+    returns
+    An tuple of strings with point and interval estimate
 
-def normal_approximation(a,b):
-    count_success = np.bincount(a)
-    x = count_success[1]
-    n = a.size
-    p_hat = x / n
-    alpha = 1 - (b/100)
-    temp = 1 - (alpha/2)
-    z = st.norm.ppf(temp)
-    mean = np.mean(a)
-    if (min((n*p_hat),(n*(1-p_hat)) > 12)):
-        lwr = p_hat - (z * ((p_hat*(1-p_hat))/n)**(1/2))
-        upr = p_hat + (z * ((p_hat*(1-p_hat))/n)**(1/2))
-        return(estimate_interval(mean, b, lwr, upr))
+    """
+    if(c== "Mean"):
+        mean = np.mean(a)
+        se = st.sem(a)
+        array =st.norm.interval(b/100, mean, se)
+        lwr = array[0]
+        upr = array[1]
+    
+    if(c=="Normal Approximation"):
+        count_success = np.bincount(a)
+        x = count_success[1]
+        n = a.size
+        p_hat = x / n
+        alpha = 1 - (b/100)
+        temp = 1 - (alpha/2)
+        z = st.norm.ppf(temp)
+        mean = np.mean(a)
+        if (min((n*p_hat),(n*(1-p_hat)) > 12)):
+            lwr = p_hat - (z * ((p_hat*(1-p_hat))/n)**(1/2))
+            upr = p_hat + (z * ((p_hat*(1-p_hat))/n)**(1/2))
+        else:
+            return("ERROR: Condition not met")
+        
+        
+    elif (c == "CP"):
+        count_success = np.bincount(a)
+        x = count_success[1]
+        n = a.size
+        alpha = 1 - (b/100)
+        mean = np.mean(a)
+        lwr = st.beta.ppf(alpha/2,x, n-x+1)
+        upr = st.beta.ppf((1-alpha/2),x+1, n-x)
+    
+    elif(c=="Jeffrey"):
+        count_success = np.bincount(a)
+        x = count_success[1]
+        n = a.size
+        alpha = 1 - (b/100)
+        mean = np.mean(a)
+        lwr = max(0,st.beta.ppf(alpha/2,x+0.5, n-x+0.5))
+        upr = min(st.beta.ppf((1-alpha/2),x+0.5, n-x+0.5),1)
+    
     else:
-        return("ERROR: Condition not met")
+        count_success = np.bincount(a)
+        x = count_success[1]
+        n = a.size
+        alpha = 1 - (b/100)
+        temp = 1 - (alpha/2)
+        z = st.norm.ppf(temp)
+        mean = np.mean(a)
+        n_tilde = n + z**2
+        p_tilde = (x + ((z**2)/2))/n_tilde
+        lwr = p_tilde - (z * ((p_tilde*(1-p_tilde))/n_tilde)**(1/2))
+        upr = p_tilde + (z * ((p_tilde*(1-p_tilde))/n_tilde)**(1/2)) 
     
-    
-def clopper_pearson(a,b):
-    count_success = np.bincount(a)
-    x = count_success[1]
-    n = a.size
-    alpha = 1 - (b/100)
-    mean = np.mean(a)
-    lwr = st.beta.ppf(alpha/2,x, n-x+1)
-    upr = st.beta.ppf((1-alpha/2),x+1, n-x)
     return(estimate_interval(mean, b, lwr, upr))
-
-def jeffrey_interval(a,b):
-    count_success = np.bincount(a)
-    x = count_success[1]
-    n = a.size
-    alpha = 1 - (b/100)
-    mean = np.mean(a)
-    lwr = max(0,st.beta.ppf(alpha/2,x+0.5, n-x+0.5))
-    upr = min(st.beta.ppf((1-alpha/2),x+0.5, n-x+0.5),1)
-    return(estimate_interval(mean, b, lwr, upr))
-    
-def agresti_coull(a,b):
-    count_success = np.bincount(a)
-    x = count_success[1]
-    n = a.size
-    alpha = 1 - (b/100)
-    temp = 1 - (alpha/2)
-    z = st.norm.ppf(temp)
-    mean = np.mean(a)
-    n_tilde = n + z**2
-    p_tilde = (x + ((z**2)/2))/n_tilde
-    lwr = p_tilde - (z * ((p_tilde*(1-p_tilde))/n_tilde)**(1/2))
-    upr = p_tilde + (z * ((p_tilde*(1-p_tilde))/n_tilde)**(1/2)) 
-    return(estimate_interval(mean, b, lwr, upr))
-
 
 # Here are tables comparing the CI of different methods at confidence levels of 90%, 95%, and 99%.
-
-# In[6]:
-
 
 arr1 = np.ones(42)
 arr = np.append(arr1, np.zeros(48))
 arr = arr.astype('int64')
-for b in [90,95,99]:
+cap = """
+<em> Comparing confidence intervals for proportions.</em>
+Using an input vector with 42 of 90 successes.
+"""
+for lvl in [90, 95, 99]:
     t_lst = defaultdict(list)
-    for f in [normalIntEst, normal_approximation, clopper_pearson, jeffrey_interval, agresti_coull]:
-        t_lst['Function'].append(f.__name__)
-        t_lst[' "Point Estimate[Condfidence Interval:(lwr,upr)]"'].append(f(arr,b))
+    for m in ['Mean','Normal', 'AC', 'CP', 'Jeffrey']:
+        t_lst['Function'].append(m)
+        t_lst[' "Point Estimate[Condfidence Interval:(lwr,upr)]"'].append(ci_prop(arr,lvl,m))
     t_lst = pd.DataFrame(t_lst)
-    print(t_lst)
+    t2 = t_lst.to_html()
+    t2 = t2.rsplit('\n')
+    t2.insert(1, cap)
+    tab2 = ''
+    for i, line in enumerate(t2):
+        tab2 += line
+        if i < (len(t2) - 1):
+            tab2 += '\n'
+    display(HTML(tab2))
 
 
 # Looking at the confidence intervals at different levels, we can see that the Agresti-Coull interval has the smallest width.

@@ -1,0 +1,208 @@
+"""
+@author: Aayushi Sinha
+
+Date submitted: Oct 1 2021
+"""
+# modules:
+import numpy as np
+import pandas as pd
+from collections import defaultdict
+from timeit import Timer
+from IPython.core.display import display, HTML
+"""
+Question 0
+"""
+
+
+"""
+Question 1
+This function generates a list of n k-tuples with a range of integers from low
+to high.
+
+Parameters and default values
+n = number of tuples in the list
+k = number of elements in the tuples. The default value is 4
+low = The lower range of the integers in the tuples. Default is 0
+high = The higher range of the integer in the tuples. Default is 20
+"""
+
+
+def generate_tuples(n, k=4, low=0, high=20):
+    ranlist = list()
+    for m in range(n):
+        temp = tuple(np.random.randint(low, high, size=k))
+        ranlist.append(temp)
+    return ranlist
+
+
+assert isinstance(generate_tuples(6), list)
+
+
+"""
+Question 2
+Parts a, b and c
+The three function essentially do the same thing. The first function uses the
+code given to us in question 0. The second function is a slightly improved
+version of the first function. The third function is a function from scratch
+to accomplish the same task as the previous two.
+
+Parameters:
+a = The index of the tuple for sorting
+b = The index of the tuple for sorting
+n = a randomly generated tuple from the function in question question 1
+"""
+
+
+def given_code(a, b, n):
+    sample_list = n
+    op = []
+    for m in range(len(sample_list)):
+        li = [sample_list[m]]
+        # Fixed indentation and indices value so that code could run.
+        for n in range(len(sample_list)):
+            if (sample_list[m][a] == sample_list[n][a] and
+                sample_list[m][b] != sample_list[n][b]):
+                li.append(sample_list[n])
+        op.append(sorted(li, key=lambda dd: dd[b], reverse=True)[0])
+    res = list(set(op))
+    return(res)
+
+
+def improved_func(a, b, n):
+    sample_list = n
+    op = []
+    for m in range(len(sample_list)):
+        temp = [sample_list[m]]
+        for n in range(len(sample_list)):
+            if (sample_list[m][a] == sample_list[n][a]
+                and sample_list[m][b] != sample_list[n][b]):
+                temp.append(sample_list[n])
+        op.append(sorted(temp, key=lambda dd: dd[b], reverse=True)[0])
+    res = list(set(op))
+    return(res)
+
+
+def new_func(a, b, n):
+    # Code for this class followed from geekforgeek
+    class custom_dictionary(dict):
+        # __init__ function
+        def __init__(self):
+            self = dict()
+        # Function to add key:value
+
+        def add(self, key, value):
+            self[key] = value
+
+    n = sorted(n, key=lambda dd: (dd[a], dd[b]))
+    dict_tuples = custom_dictionary()
+    for k in range(len(n)):
+        dict_tuples.add(n[k][a], n[k])
+    our_lst = dict_tuples.values()
+    lst = list(set(our_lst))
+    return(lst)
+
+
+# The new_func works is the same function as the given code snippet except the 
+# corner case of when both the tuples have the same integers for a and b indices.
+# In dictionary, it can't have values with the same key, so the one of them is
+#removed.
+"""
+Question 2
+Part d
+We generate a sample list of tuples using the function in question 1 and run a small monte carlo study to compare the run time
+of the three functions in part a,b and c.
+The results can be seen in the table produced.
+"""
+
+n = generate_tuples(6)
+n_mc = 10000
+res = defaultdict(list)
+for f in (given_code, improved_func, new_func):
+    t = Timer("f(a,b,n)", globals={'f': f, 'a': 0, 'b': 2, 'n': n})
+    m = np.median([t.timeit(1) for i in range(n_mc)])
+    res[f.__name__].append(round(m * 1e6, 1))
+
+cap = """Monte Carlo study for execution time"""
+
+res = pd.DataFrame(res)
+t1 = res.to_html(index=False)
+t1 = t1.rsplit('\n')
+t1.insert(1, cap)
+tab1 = ''
+for i, line in enumerate(t1):
+    tab1 += line
+    if i < (len(t1) - 1):
+        tab1 += '\n'
+display(HTML(tab1))
+
+time_lst = defaultdict(list)
+for f in [given_code, improved_func, new_func]:
+    t = Timer('f(a,b,n)', globals={'f': f, 'a': 0, 'b': 2, 'n': n})
+    tm = np.median([t.timeit(1) for i in range(n_mc)])
+    time_lst['Function'].append(f.__name__)
+    time_lst['execution time(secs)'].append(np.median(tm * 1e6))
+time_lst = pd.DataFrame(time_lst)
+for c, d in zip(time_lst.columns, time_lst.dtypes):
+    if d == np.dtype('float64'):
+        time_lst[c] = time_lst[c].map(lambda x: '%5.3f' % x)
+print(time_lst)
+
+"""
+Question 3
+Part a
+Importing files from the internet and using Pandas to read, clean, and append
+the data files.
+Finally, save the resulting data frame to pickle format in directory.
+"""
+data1 = pd.read_sas('https://wwwn.cdc.gov/Nchs/Nhanes/2011-2012/DEMO_G.XPT')
+data2 = pd.read_sas('https://wwwn.cdc.gov/Nchs/Nhanes/2013-2014/DEMO_H.XPT')
+data3 = pd.read_sas('https://wwwn.cdc.gov/Nchs/Nhanes/2015-2016/DEMO_I.XPT')
+data4 = pd.read_sas('https://wwwn.cdc.gov/Nchs/Nhanes/2017-2018/DEMO_J.XPT')
+data1["cohort"] = "2011-2012"
+data2["cohort"] = "2013-2014"
+data3["cohort"] = "2015-2016"
+data4["cohort"] = "2017-2018"
+data1 = data1[['SEQN', 'RIDAGEYR', 'RIDSTATR', 'RIDRETH3', 'DMDEDUC2',
+               'DMDMARTL', 'SDMVPSU', 'SDMVSTRA', 'WTMEC2YR', 'WTINT2YR',
+               'cohort']]
+data2 = data2[['SEQN', 'RIDAGEYR', 'RIDSTATR', 'RIDRETH3', 'DMDEDUC2',
+               'DMDMARTL', 'SDMVPSU', 'SDMVSTRA', 'WTMEC2YR', 'WTINT2YR',
+               'cohort']]
+data3 = data3[['SEQN', 'RIDAGEYR', 'RIDSTATR', 'RIDRETH3', 'DMDEDUC2',
+               'DMDMARTL', 'SDMVPSU', 'SDMVSTRA', 'WTMEC2YR', 'WTINT2YR',
+               'cohort']]
+data4 = data4[['SEQN', 'RIDAGEYR', 'RIDSTATR', 'RIDRETH3', 'DMDEDUC2',
+               'DMDMARTL', 'SDMVPSU', 'SDMVSTRA', 'WTMEC2YR', 'WTINT2YR',
+               'cohort']]
+
+dataset = pd.concat([data1, data2, data3, data4])
+dataset.columns = ['seqn', 'age', 'status', 'reth3', 'edu2', 'martl', 'mvpsu',
+                   'mvstra', 'mecweight', 'intweight', 'cohort']
+dataset['cohort'] = dataset['cohort'].astype('str')
+# All the other columns have the type float64 which is fine.
+dataset.to_pickle(
+    "C:/Users/Aayushi Sinha/Desktop/M.S Applied Statistics/Fall 2021/STATS 507/demographicdataset.sas"
+    )
+
+"""
+Part b
+"""
+
+df1 = pd.read_sas("https://wwwn.cdc.gov/Nchs/Nhanes/2011-2012/OHXDEN_G.XPT")
+df2 = pd.read_sas("https://wwwn.cdc.gov/Nchs/Nhanes/2013-2014/OHXDEN_H.XPT")
+df3 = pd.read_sas("https://wwwn.cdc.gov/Nchs/Nhanes/2015-2016/OHXDEN_I.XPT")
+df4 = pd.read_sas("https://wwwn.cdc.gov/Nchs/Nhanes/2017-2018/OHXDEN_J.XPT")
+df1 = df1.loc[:, 'SEQN':'OHX31CTC']
+df2 = df2.loc[:, 'SEQN':'OHX31CTC']
+df3 = df3.loc[:, 'SEQN':'OHX31CTC']
+df4 = df4.loc[:, 'SEQN':'OHX31CTC']
+df1["cohort"] = "2011-2012"
+df2["cohort"] = "2013-2014"
+df3["cohort"] = "2015-2016"
+df4["cohort"] = "2017-2018"
+data = pd.concat([df1, df2, df3, df4])
+data2 = data.drop(columns=['OHDEXSTS', 'OHXIMP'])
+data2.columns = data2.columns.str.lower()
+data2.to_pickle(
+    "C:/Users/Aayushi Sinha/Desktop/M.S Applied Statistics/Fall 2021/STATS 507/dentaldata.sas"
+    )   

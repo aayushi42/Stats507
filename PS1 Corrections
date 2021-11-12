@@ -1,0 +1,291 @@
+#  ## Problem Set 1
+
+# ## Question 0
+# 
+# This is *question 0* for [problem set 1](https://jbhender.github.io/Stats507/F21/ps/ps1.html) of [Stats 507](https://jbhender.github.io/Stats507/F21/).
+# 
+# > Question 0 is about Markdown
+#  
+# The next question is about the **Fibonnaci sequence**, $F_{n} = F_{n-2}+F_{n-1}$. In part **a** we will define a Python function `fib_rec()`.
+# 
+# Below is a …
+#  
+#  ### Level 3 Header
+# Next, we can make a bulleted list:
+# 
+# * Item 1
+#  + detail 1
+#  + detail 2
+#  
+# * Item 2
+# 
+# Finally, we can make an enumerated list:
+# 
+#         a. Item 1 
+#         b. Item 2
+#         c. Iten 3
+#  
+
+# ## Question 1
+
+# In[1]:
+
+
+import numpy as np 
+import math
+import pandas as pd
+from collections import defaultdict
+from timeit import Timer
+import scipy.stats as st
+
+
+# In[2]:
+
+
+"""
+a
+"""
+def fib_rec(n):
+    if n<= 1:
+        return n
+    else:
+        return (fib_rec(n-2) + fib_rec(n-1))
+    
+assert np.all(fib_rec(7)==13) and np.all(fib_rec(11)==89) and np.all(fib_rec(13)==233)
+
+"""
+b
+"""
+def fib_for(n):
+    if n<=1:
+        return n
+    else :
+        f1 = 1
+        f2 = 1
+        fsum = 1
+        for x in range (2,n):
+            fsum = f1+f2
+            f2 = f1
+            f1 = fsum
+        return fsum
+            
+assert np.all(fib_for(7)==13) and np.all(fib_for(11)==89) and np.all(fib_for(13)==233)
+
+"""
+c
+"""
+def fib_whl(n):
+    if n<=1:
+        return n
+    else :
+        f0 = 0
+        f1 = 1
+        fsum = 0
+        x = 1
+        while(x<=n):
+            x += 1
+            fsum = f0 + f1
+            f1 = f0
+            f0 = fsum
+        return fsum
+    
+assert np.all(fib_whl(7)==13) and np.all(fib_whl(11)==89) and np.all(fib_whl(13)==233)  
+
+"""
+d
+"""
+def fib_rnd(n):
+    x = (1 + math.sqrt(5))/2
+    fsum = (x**n)/math.sqrt(5)
+    return round(fsum)
+
+assert np.all(fib_rnd(7)==13) and np.all(fib_rnd(11)==89) and np.all(fib_rnd(13)==233) 
+
+"""
+e
+"""
+def fib_flr(n):
+    x = (1 + math.sqrt(5))/2
+    fsum = ((x**n)/math.sqrt(5) + 1/2 )
+    return math.floor(fsum)
+
+assert np.all(fib_rnd(7)==13) and np.all(fib_rnd(11)==89) and np.all(fib_rnd(13)==233) 
+
+    
+
+
+# f.
+# For a sequence of increasingly large values of n from 5 to 20, here are the tables comparing the median time for the different functions
+
+# In[3]:
+
+
+a=25
+for a in [5,10,15,20]:
+    time_lst = defaultdict(list)
+    for f in [fib_rec, fib_for, fib_whl, fib_rnd, fib_flr]:
+        t = Timer('f(a)', globals={'f': f, 'a': a})
+        tm = t.timeit(1000)
+        time_lst['Function'].append(f.__name__)
+        time_lst['min, s'].append(np.min(tm))
+        time_lst['median, s'].append(np.median(tm))
+    
+    time_lst = pd.DataFrame(time_lst)
+    for c, d in zip(time_lst.columns, time_lst.dtypes):
+        if d == np.dtype('float64'):
+            time_lst[c] = time_lst[c].map(lambda x: '%5.3f' % x)
+    print(time_lst)
+    
+
+
+# ## Question 2
+
+# In[4]:
+
+
+"""
+a
+"""
+def computeRow(n):    
+    b = []
+    for k in range (0,n+1):
+        a = int((math.factorial(n))/((math.factorial(k))*(math.factorial(n-k))))
+        b.append(a)
+    return b
+
+"""
+b
+"""
+def computeTriangle(n):
+    tri = []
+    for i in range (0,n+1):
+        a = computeRow(i)
+        tri = tri + a
+    def printTri(tri,n):  
+        n = n + 1
+        k = n*6
+        len = 0
+        for i in range(0, n):   
+            for j in range(0, k):
+                print(end=" ")    
+            k = k - 4   
+            for j in range(0, i+1):        
+                print(tri[len],"      ", end="")
+                len=len+1
+            print("\r")
+        
+    printTri(tri, n)
+
+computeTriangle(10)
+
+
+# ## Question 3
+
+# STAT 101: Point and Interval Estimates
+
+# In[5]:
+
+
+def estimate_interval(a,b,c,d):
+    if a is None:
+        dk = {"est": 0, "level":0, "lwr": 0, "upr": 0 }
+        return dk
+    else:
+        return("%.2f[%2.1f%%CI:(%.4f,%.4f)]" % (a,b,c,d))
+
+
+# In[6]:
+
+
+"""
+a
+"""
+def normalIntEst(a, b):
+    x = np.mean(a)
+    se = st.sem(a)
+    array =st.norm.interval(b/100, x, se)
+    lwr = array[0]
+    upr = array[1]
+    return(estimate_interval(x, b, lwr, upr))
+
+"""
+b
+"""
+def normalIntEst(a, b):
+    x = np.mean(a)
+    se = st.sem(a)
+    array =st.norm.interval(b/100, x, se)
+    lwr = array[0]
+    upr = array[1]
+    return(estimate_interval(x, b, lwr, upr))
+
+def normal_approximation(a,b):
+    count_success = np.bincount(a)
+    x = count_success[1]
+    n = a.size
+    p_hat = x / n
+    alpha = 1 - (b/100)
+    temp = 1 - (alpha/2)
+    z = st.norm.ppf(temp)
+    mean = np.mean(a)
+    if (min((n*p_hat),(n*(1-p_hat)) > 12)):
+        lwr = p_hat - (z * ((p_hat*(1-p_hat))/n)**(1/2))
+        upr = p_hat + (z * ((p_hat*(1-p_hat))/n)**(1/2))
+        return(estimate_interval(mean, b, lwr, upr))
+    else:
+        return("ERROR: Condition not met")
+    
+    
+def clopper_pearson(a,b):
+    count_success = np.bincount(a)
+    x = count_success[1]
+    n = a.size
+    alpha = 1 - (b/100)
+    mean = np.mean(a)
+    lwr = st.beta.ppf(alpha/2,x, n-x+1)
+    upr = st.beta.ppf((1-alpha/2),x+1, n-x)
+    return(estimate_interval(mean, b, lwr, upr))
+
+def jeffrey_interval(a,b):
+    count_success = np.bincount(a)
+    x = count_success[1]
+    n = a.size
+    alpha = 1 - (b/100)
+    mean = np.mean(a)
+    lwr = max(0,st.beta.ppf(alpha/2,x+0.5, n-x+0.5))
+    upr = min(st.beta.ppf((1-alpha/2),x+0.5, n-x+0.5),1)
+    return(estimate_interval(mean, b, lwr, upr))
+    
+def agresti_coull(a,b):
+    count_success = np.bincount(a)
+    x = count_success[1]
+    n = a.size
+    alpha = 1 - (b/100)
+    temp = 1 - (alpha/2)
+    z = st.norm.ppf(temp)
+    mean = np.mean(a)
+    n_tilde = n + z**2
+    p_tilde = (x + ((z**2)/2))/n_tilde
+    lwr = p_tilde - (z * ((p_tilde*(1-p_tilde))/n_tilde)**(1/2))
+    upr = p_tilde + (z * ((p_tilde*(1-p_tilde))/n_tilde)**(1/2)) 
+    return(estimate_interval(mean, b, lwr, upr))
+
+
+# Here are tables comparing the CI of different methods at confidence levels of 90%, 95%, and 99%.
+
+# In[6]:
+
+
+arr1 = np.ones(42)
+arr = np.append(arr1, np.zeros(48))
+arr = arr.astype('int64')
+for b in [90,95,99]:
+    t_lst = defaultdict(list)
+    for f in [normalIntEst, normal_approximation, clopper_pearson, jeffrey_interval, agresti_coull]:
+        t_lst['Function'].append(f.__name__)
+        t_lst[' "Point Estimate[Condfidence Interval:(lwr,upr)]"'].append(f(arr,b))
+    t_lst = pd.DataFrame(t_lst)
+    print(t_lst)
+
+
+# Looking at the confidence intervals at different levels, we can see that the Agresti-Coull interval has the smallest width.

@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+# coding: utf-8
 
 # # Problem Set 4
 
@@ -61,3 +63,4 @@ df = pd.DataFrame(dict(A = s, B = td))
 df['C']=df['A']+df['B']
 df['D']=df['C']-df['B']
 print(df)
+
